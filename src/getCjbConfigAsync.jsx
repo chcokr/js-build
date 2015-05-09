@@ -5,7 +5,7 @@ const babel = Bluebird.promisifyAll(require('babel'));
 const fs = Bluebird.promisifyAll(require('fs'));
 /* eslint-disable no-underscore-dangle */
 const nodeRequire = require('module')._load;
-/* eslint-enaable no-underscore-dangle */
+/* eslint-enable no-underscore-dangle */
 const path = require('path');
 
 const cwd = process.cwd();
