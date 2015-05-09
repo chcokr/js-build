@@ -1,0 +1,38 @@
+{
+  "name": "chcokr-js-build",
+  "description": "A JS build process.",
+  "version": "0.0.0",
+  "bin": {
+    "cjb": "dist/index.js"
+  },
+  "dependencies": {
+    "babel": "^5.2.16",
+    "babel-core": "^5.2.17",
+    "babel-eslint": "^3.0.1",
+    "babel-loader": "^5.0.0",
+    "bluebird": "^2.9.25",
+    "eslint": "^0.20.0",
+    "glob": "^5.0.5",
+    "json-loader": "^0.5.1",
+    "raw-loader": "^0.5.1",
+    "source-map-support": "^0.2.10",
+    "vm2": "^0.2.2",
+    "webpack": "^1.8.11"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "author": "YJ Yang <chcokr@gmail.com>",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chcokr/js-build.git"
+  },
+  "keywords": [
+    "build"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chcokr/js-build/issues"
+  },
+  "homepage": "https://github.com/chcokr/js-build#readme"
+}
