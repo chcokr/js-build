@@ -27,11 +27,13 @@ const WebpackDevServer = require('webpack-dev-server');
  *
  * `output.publicPath` is set to `dist/`.
  *
+ * @param {object} webpackConfig The webpackConfig which will be modified and
+ * then be used to run webpack-dev-server
  * @returns {void}
  * @throws {Error} When cjbConfig.js/jsx doesn't export property `wdsPort`
  * @throws {Error} When `wdsPort` isn't an integer
  */
-async function runWebpackDevServerAsync() {
+async function runWebpackDevServerAsync(webpackConfig) {
   try {
 
     const cjbConfig = await getCjbConfigAsync();
@@ -47,8 +49,6 @@ async function runWebpackDevServerAsync() {
     }
 
     const port = cjbConfig.wdsPort;
-
-    const webpackConfig = await getModifiedWebpackConfigAsync();
 
     let devServerWebpackConfig = Object.assign({}, webpackConfig);
 

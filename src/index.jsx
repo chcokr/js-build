@@ -1,4 +1,6 @@
 const checkPathsExistAsync = require('./checkPathsExistAsync.jsx');
+const getModifiedWebpackConfigAsync =
+  require('./getModifiedWebpackConfigAsync.jsx');
 const installPrecommitHookAsync = require('./installPrecommitHookAsync.jsx');
 const runBabelAsync = require('./runBabelAsync.jsx');
 const runEslintAsync = require('./runEslintAsync.jsx');
@@ -18,7 +20,8 @@ const utils = require('./utils.jsx');
     await runEslintAsync();
 
     if (process.argv[2] === 'wds') {
-      await runWebpackDevServerAsync();
+      const webpackConfig = await getModifiedWebpackConfigAsync();
+      await runWebpackDevServerAsync(webpackConfig);
     } else {
       await runWebpackAsync();
     }
