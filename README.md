@@ -46,6 +46,10 @@ Until it hits v1.0, every new `x` in v0.x may introduce breaking changes.
 **Note**: These same rules are expected upon this repo itself.
 In fact, one of the tests is to apply the build process to this very repo.
 
+### Git
+
+The project must have Git initialized in `.git/`.
+
 ### Git pre-commit hook
 
 Running `cjb` in the terminal automatically installs/overwrites a Git pre-commit
