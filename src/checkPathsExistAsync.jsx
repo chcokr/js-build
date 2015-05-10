@@ -41,6 +41,12 @@ async function checkPathsExistAsync() {
       ' environment.jsx');
   }
 
+  console.log('Checking if README.md exists');
+  const readmeExists = await pathExistsAsync(path.resolve(cwd, 'README.md'));
+  if (!readmeExists) {
+    throw new Error('Project root must have a file named README.md');
+  }
+
   console.log('Checking if .git/ exists');
   const gitExists = await pathExistsAsync(path.resolve(cwd, '.git'));
   if (!gitExists) {

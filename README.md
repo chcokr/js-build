@@ -57,6 +57,10 @@ hook that prevents you from committing unless the following rules are all met.
 So be careful if you have set up your own pre-commit hook in the project
 you're going to use `cjb` against.
 
+### `README.md`
+
+The project must contain documentation in `README.md`.
+
 ### The Language
 
 The project should be written in a variant of JS that:
