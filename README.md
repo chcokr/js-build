@@ -229,3 +229,49 @@ TODO: browser mode
 In node mode, `target` is set to `"node"`.
 
 In browser mode, `target` is set to `"browser"`.
+
+## webpack-dev-server support
+
+CJB provides basic configurations for
+[webpack-dev-server](http://webpack.github.io/docs/webpack-dev-server.html)
+and helps run it.
+
+### `cjb.config.js/jsx` - `module.exports.wdsPort`
+
+To use the WDS support, `cjb.config.js/jsx` must export an integer property
+`wdsPort`, the port on which webpack-dev-server will run.
+
+### `cjb wds`
+
+Run `cjb wds` to run the WDS. This command will do everything that `cjb`
+does but replaces the webpack build step with its own, non-terminating server
+process.
+
+### Hot module replacement is enabled
+
+The server is equipped with
+[hot module replacement](http://webpack.github.io/docs/hot-module-replacement.html)
+support.
+
+### `src/runWebpackDevServeryAsync.jsx`
+
+The WDS support is also available through the function in this repo's
+`src/runWebpackDevServeryAsync.jsx`.
+
+### WDS-specific `webpackConfig` manipulations
+
+#### `entry`
+
+The following strings are added to the **beginning** of the `entry` array.
+
+```
+webpack-dev-server/client?http://0.0.0.0:<wdsPort in cjbConfig.js/jsx>
+```
+
+```
+webpack/hot/dev-server
+```
+
+#### `output.publicPath`
+
+`output.publicPath` is set to `dist/`.

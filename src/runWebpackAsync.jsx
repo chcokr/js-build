@@ -1,6 +1,5 @@
-const createWebpackConfigNodeTarget =
-  require('./createWebpackConfigNodeTarget.jsx');
-const getCjbConfigAsync = require('./getCjbConfigAsync.jsx');
+const getFinalWebpackConfigAsync =
+  require('./getModifiedWebpackConfigAsync.jsx');
 const utils = require('./utils.jsx');
 
 const Bluebird = require('bluebird');
@@ -19,20 +18,7 @@ const webpackAsync = Bluebird.promisify(require('webpack'));
 async function runWebpackAsync() {
   try {
 
-    const cjbConfig = await getCjbConfigAsync();
-
-    const cjbTarget = cjbConfig.target;
-    const cjbWebpackConfig = cjbConfig.webpackConfig;
-
-    const webpackConfig = (() => {
-      switch (cjbTarget) {
-        case 'node':
-          return createWebpackConfigNodeTarget(cjbWebpackConfig);
-        default:
-          throw new Error(`webpack configuration for target "${cjbTarget}"` +
-            ` has not been implemented`);
-      }
-    })();
+    const webpackConfig = await getFinalWebpackConfigAsync();
 
     const stats = await webpackAsync(webpackConfig);
 
