@@ -194,6 +194,10 @@ the `module.loaders` array).
 {test: /\.json$/, loader: 'json'}
 ```
 
+### `output.path`
+
+`output.path` is set to the absolute path of the `dist/` directory.
+
 ### `plugins`
 
 In node mode, the following plugins are added at the **beginning** of the

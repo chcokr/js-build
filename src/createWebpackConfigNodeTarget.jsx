@@ -1,7 +1,10 @@
 // inspired by http://jlongster.com/Backend-Apps-with-Webpack--Part-I (thanks)
 
 const fs = require('fs');
+const path = require('path');
 const webpack = require('webpack');
+
+const cwd = process.cwd();
 
 const nodeModules =
   fs.readdirSync('node_modules')
@@ -48,6 +51,10 @@ const nodeModules =
  * {test: /\.json$/, loader: 'json'}
  * ```
  *
+ * ### `output.path`
+ *
+ * `output.path` is set to the absolute path of the `dist/` directory.
+ *
  * ### `plugins`
  *
  * In node mode, the following plugins are added at the **beginning** of the
@@ -93,6 +100,12 @@ function createWebpackConfigNodeTarget(config) {
     {test: /\.jsx$/, exclude: /node_modules/, loader: 'babel'},
     {test: /\.json$/, loader: 'json'}
   ];
+
+  if (!newConfig.output) {
+    newConfig.output = {};
+  }
+
+  newConfig.output.path = path.resolve(cwd, 'dist');
 
   if (!newConfig.plugins) {
     newConfig.plugins = [];
