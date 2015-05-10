@@ -72,6 +72,13 @@ const nodeModules =
  * {raw: true, entryOnly: false}
  * )
  * ```
+ * ```
+ * // Adding this plugin even when hot-loading is not used doesn't seem to hurt.
+ * new webpack.HotModuleReplacementPlugin()
+ * ```
+ * ```
+ * new webpack.NoErrorsPlugin()
+ * ```
  *
  * ### `target`
  *
@@ -119,6 +126,12 @@ function createWebpackConfigNodeTarget(config) {
       `require('source-map-support').install();`,
       {raw: true, entryOnly: false}
     ),
+
+    // Adding this plugin even when hot-loading is not used doesn't seem to
+    // hurt.
+    new webpack.HotModuleReplacementPlugin(),
+
+    new webpack.NoErrorsPlugin(),
     ...newConfig.plugins
   ];
 

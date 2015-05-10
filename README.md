@@ -215,6 +215,12 @@ new webpack.BannerPlugin(
   {raw: true, entryOnly: false}
 )
 ```
+```
+new webpack.HotModuleReplacementPlugin()
+```
+```
+new webpack.NoErrorsPlugin()
+```
 
 TODO: browser mode
 
