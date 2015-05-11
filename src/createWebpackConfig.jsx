@@ -1,5 +1,3 @@
-// inspired by http://jlongster.com/Backend-Apps-with-Webpack--Part-I (thanks)
-
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -20,11 +18,18 @@ const nodeModules =
  * (**NOTE**: this function should be used when `cjbConfig.js/jsx` exports a
  * property `target` of value `"node"`).
  *
+ * Thanks [James Long](http://jlongster.com/Backend-Apps-with-Webpack--Part-I)
+ * for the inspiration!
+ *
  * ### `devtool`
+ *
+ * In browser mode, `devtool` is not touched.
  *
  * In node mode, `devtool` is set to `"sourcemap"`.
  *
  * ### `externals`
+ *
+ * In browser mode, `externals` is not touched.
  *
  * In node mode, `externals` is set to:
  *
@@ -84,17 +89,22 @@ const nodeModules =
  *
  * In node mode, `target` is set to `"node"`.
  *
+ * @param {string} target The `target` property exported by cjbConfig.js/jsx
  * @param {webpackConfig} config The `webpackConfig` property of a
  * `cjbConfig.js/jsx`
  * @returns {object} A new config object which all properties of `config`
  * have been copied into and the aforementioned modifications have been made to.
  */
-function createWebpackConfigNodeTarget(config) {
+function createWebpackConfig(target, config) {
   const newConfig = Object.assign({}, config);
 
-  newConfig.devtool = 'sourcemap';
+  if (target === 'node') {
+    newConfig.devtool = 'sourcemap';
+  }
 
-  newConfig.externals = nodeModules;
+  if (target === 'node') {
+    newConfig.externals = nodeModules;
+  }
 
   if (!newConfig.module) {
     newConfig.module = {};
@@ -144,4 +154,4 @@ function createWebpackConfigNodeTarget(config) {
   return newConfig;
 }
 
-module.exports = createWebpackConfigNodeTarget;
+module.exports = createWebpackConfig;

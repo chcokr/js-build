@@ -1,7 +1,7 @@
 module.exports.checkPathsExistAsync = require('./checkPathsExistAsync.jsx');
 
-module.exports.createWebpackConfigNodeTarget =
-  require('./createWebpackConfigNodeTarget.jsx');
+module.exports.createWebpackConfig =
+  require('./createWebpackConfig.jsx');
 
 module.exports.getCjbConfigAsync = require('./getCjbConfigAsync.jsx');
 

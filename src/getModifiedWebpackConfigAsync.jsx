@@ -1,5 +1,4 @@
-const createWebpackConfigNodeTarget =
-  require('./createWebpackConfigNodeTarget.jsx');
+const createWebpackConfigNodeTarget = require('./createWebpackConfig.jsx');
 const getCjbConfigAsync = require('./getCjbConfigAsync.jsx');
 const utils = require('./utils.jsx');
 
@@ -10,8 +9,6 @@ const utils = require('./utils.jsx');
  *
  * @async
  * @returns {object} The final modified version of the `webpackConfig`.
- * @throws {Error} When the webpack configuration for a certain cjbConfig
- * `target` has not been implemented.
  */
 async function getModifiedWebpackConfigAsync() {
   try {
@@ -21,13 +18,7 @@ async function getModifiedWebpackConfigAsync() {
     const cjbTarget = cjbConfig.target;
     const cjbWebpackConfig = cjbConfig.webpackConfig;
 
-    switch (cjbTarget) {
-      case 'node':
-        return createWebpackConfigNodeTarget(cjbWebpackConfig);
-      default:
-        throw new Error(`webpack configuration for target "${cjbTarget}"` +
-          ` has not been implemented`);
-    }
+    return createWebpackConfigNodeTarget(cjbTarget, cjbWebpackConfig);
 
   } catch (err) {
     utils.handleError(err);
