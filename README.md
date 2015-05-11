@@ -253,11 +253,6 @@ The server is equipped with
 [hot module replacement](http://webpack.github.io/docs/hot-module-replacement.html)
 support.
 
-### `src/runWebpackDevServeryAsync.jsx`
-
-The WDS support is also available through the function in this repo's
-`src/runWebpackDevServeryAsync.jsx`.
-
 ### WDS-specific `webpackConfig` manipulations
 
 #### `entry`
@@ -275,3 +270,13 @@ webpack/hot/dev-server
 #### `output.publicPath`
 
 `output.publicPath` is set to `dist/`.
+
+## API
+
+Many of these functionalities are programmatically accessible through the API
+exposed through `src/api.jsx`. To use this API in your project, install via `npm
+install chcokr-js-build` and simply access `require('chcokr-js-build')` in your
+code.
+
+To learn more about the API, check out `src/api.jsx` and the corresponding
+documentation for each function.

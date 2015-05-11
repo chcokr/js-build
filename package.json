@@ -3,7 +3,7 @@
   "description": "A JS build process.",
   "version": "0.0.0",
   "bin": {
-    "cjb": "dist/index.js"
+    "cjb": "dist/bin.js"
   },
   "dependencies": {
     "babel": "^5.2.16",
@@ -23,7 +23,7 @@
   "devDependencies": {},
   "scripts": {},
   "author": "YJ Yang <chcokr@gmail.com>",
-  "main": "dist/index.js",
+  "main": "dist/api.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chcokr/js-build.git"

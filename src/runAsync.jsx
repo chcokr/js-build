@@ -8,7 +8,21 @@ const runWebpackAsync = require('./runWebpackAsync.jsx');
 const runWebpackDevServerAsync = require('./runWebpackDevServerAsync.jsx');
 const utils = require('./utils.jsx');
 
-(async function () {
+/**
+ * Runs the following tasks in order:
+ *
+ * - Check if certain paths exist
+ * - Install the Git pre-commit hook
+ * - Try babel compilation
+ * - Run ESLint
+ * - Webpack:
+ *  - if `mode` is `wds`, runs the webpack-dev-server
+ *  - otherwise, creates the webpack bundle in dist/
+ *
+ * @param {string} mode Either "wds" or `undefined`.
+ * @returns {void}
+ */
+async function runAsync(mode) {
   try {
 
     await checkPathsExistAsync();
@@ -19,7 +33,7 @@ const utils = require('./utils.jsx');
 
     await runEslintAsync();
 
-    if (process.argv[2] === 'wds') {
+    if (mode === 'wds') {
       const webpackConfig = await getModifiedWebpackConfigAsync();
       await runWebpackDevServerAsync(webpackConfig);
     } else {
@@ -29,4 +43,6 @@ const utils = require('./utils.jsx');
   } catch (err) {
     utils.handleError(err);
   }
-})();
+}
+
+module.exports = runAsync;

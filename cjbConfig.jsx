@@ -3,9 +3,12 @@ const webpack = require('webpack');
 module.exports.target = 'node';
 
 module.exports.webpackConfig = {
-  entry: './src/index.jsx',
+  entry: {
+    api: './src/api.jsx',
+    bin: './src/bin.jsx'
+  },
   output: {
-    filename: 'index.js'
+    filename: '[name].js'
   },
   plugins: [
     new webpack.BannerPlugin(
