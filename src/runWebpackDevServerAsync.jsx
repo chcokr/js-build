@@ -8,9 +8,9 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
 /**
- * Makes the following modifications to the default-manipulated `cjbConfig`
- * object, and runs the webpack-dev-server using that new configuration on the
- * port specified in `cjbConfig.js/jsx`'s exported property `wdsPort`.
+ * Makes the following modifications to `webpackConfig`, and runs the
+ * webpack-dev-server using that new configuration on the port specified in
+ * `cjbConfig.js/jsx`'s exported property `wdsPort`.
  *
  * ### `entry`
  *
