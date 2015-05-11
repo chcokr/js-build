@@ -203,18 +203,6 @@ the `module.loaders` array).
 In node mode, the following plugins are added at the **beginning** of the
 `plugins` array, in this order:
 
-```JS
-new webpack.BannerPlugin(
-  `require('babel/polyfill');`,
-  {raw: true, entryOnly: false}
-)
-```
-```JS
-new webpack.BannerPlugin(
-  `require('source-map-support').install();`,
-  {raw: true, entryOnly: false}
-)
-```
 ```
 new webpack.HotModuleReplacementPlugin()
 ```

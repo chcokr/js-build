@@ -1,3 +1,6 @@
+require('babel/polyfill');
+require('source-map-support').install();
+
 const runAsync = require('./runAsync.jsx');
 const utils = require('./utils.jsx');
 

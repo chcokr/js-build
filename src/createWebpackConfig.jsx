@@ -65,18 +65,6 @@ const nodeModules =
  * In node mode, the following plugins are added at the **beginning** of the
  * `plugins` array, in this order:
  *
- * ```JS
- * new webpack.BannerPlugin(
- * `require('babel/polyfill');`,
- * {raw: true, entryOnly: false}
- * )
- * ```
- * ```JS
- * new webpack.BannerPlugin(
- * `require('source-map-support').install();`,
- * {raw: true, entryOnly: false}
- * )
- * ```
  * ```
  * // Adding this plugin even when hot-loading is not used doesn't seem to hurt.
  * new webpack.HotModuleReplacementPlugin()
@@ -132,15 +120,6 @@ function createWebpackConfig(target, config) {
     newConfig.plugins = [];
   }
   newConfig.plugins = [
-    new webpack.BannerPlugin(
-      `require('babel/polyfill');`,
-      {raw: true, entryOnly: false}
-    ),
-    new webpack.BannerPlugin(
-      `require('source-map-support').install();`,
-      {raw: true, entryOnly: false}
-    ),
-
     // Adding this plugin even when hot-loading is not used doesn't seem to
     // hurt.
     new webpack.HotModuleReplacementPlugin(),
