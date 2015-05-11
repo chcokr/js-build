@@ -104,7 +104,11 @@ function createWebpackConfigNodeTarget(config) {
   }
   newConfig.module.loaders = [
     ...newConfig.module.loaders,
-    {test: /\.jsx$/, exclude: /node_modules/, loader: 'babel'},
+    {
+      test: /\.jsx$/,
+      exclude: /node_modules/,
+      loader: 'babel?' + JSON.stringify(require('./.babelrc'))
+    },
     {test: /\.json$/, loader: 'json'}
   ];
 
