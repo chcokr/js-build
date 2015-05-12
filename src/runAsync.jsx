@@ -33,11 +33,11 @@ async function runAsync(mode) {
 
     await runEslintAsync();
 
+    const webpackConfig = await getModifiedWebpackConfigAsync();
     if (mode === 'wds') {
-      const webpackConfig = await getModifiedWebpackConfigAsync();
       await runWebpackDevServerAsync(webpackConfig);
     } else {
-      await runWebpackAsync();
+      await runWebpackAsync(webpackConfig);
     }
 
   } catch (err) {
