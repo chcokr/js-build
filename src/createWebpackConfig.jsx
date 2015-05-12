@@ -75,7 +75,7 @@ const nodeModules =
  *
  * ### `target`
  *
- * In browser mode, `target` is set to `"browser"`.
+ * In browser mode, `target` is set to `"web"`.
  *
  * In node mode, `target` is set to `"node"`.
  *
@@ -131,7 +131,7 @@ function createWebpackConfig(target, config) {
   ];
 
   if (target === 'browser') {
-    newConfig.target = 'browser';
+    newConfig.target = 'web';
   } else if (target === 'node') {
     newConfig.target = 'node';
   }

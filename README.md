@@ -216,7 +216,7 @@ TODO: browser mode
 
 In node mode, `target` is set to `"node"`.
 
-In browser mode, `target` is set to `"browser"`.
+In browser mode, `target` is set to `"web"`.
 
 ## webpack-dev-server support
 
