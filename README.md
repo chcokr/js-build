@@ -219,10 +219,10 @@ CJB provides basic configurations for
 [webpack-dev-server](http://webpack.github.io/docs/webpack-dev-server.html)
 and helps run it.
 
-### `cjb.config.js/jsx` - `module.exports.wdsPort`
+### `environment.js/jsx` - `module.exports.CJB_WDS_PORT`
 
-To use the WDS support, `cjb.config.js/jsx` must export an integer property
-`wdsPort`, the port on which webpack-dev-server will run.
+To use the WDS support, `environment.js/jsx` must export an integer property
+`CJB_WDS_PORT`, the port on which webpack-dev-server will run.
 
 ### `cjb wds`
 
