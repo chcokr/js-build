@@ -75,6 +75,8 @@ const nodeModules =
  *
  * ### `target`
  *
+ * In browser mode, `target` is set to `"browser"`.
+ *
  * In node mode, `target` is set to `"node"`.
  *
  * @param {string} target The `target` property exported by cjbConfig.js/jsx
@@ -128,7 +130,11 @@ function createWebpackConfig(target, config) {
     ...newConfig.plugins
   ];
 
-  newConfig.target = 'node';
+  if (target === 'browser') {
+    newConfig.target = 'browser';
+  } else if (target === 'node') {
+    newConfig.target = 'node';
+  }
 
   return newConfig;
 }
