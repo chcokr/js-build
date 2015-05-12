@@ -1,6 +1,4 @@
 const getCjbConfigAsync = require('./getCjbConfigAsync.jsx');
-const getModifiedWebpackConfigAsync =
-  require('./getModifiedWebpackConfigAsync.jsx');
 const utils = require('./utils.jsx');
 
 const Bluebird = require('bluebird');

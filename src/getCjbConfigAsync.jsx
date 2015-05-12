@@ -3,10 +3,10 @@ const utils = require('./utils.jsx');
 const Bluebird = require('bluebird');
 const babel = Bluebird.promisifyAll(require('babel'));
 const fs = Bluebird.promisifyAll(require('fs'));
-/* eslint-disable no-underscore-dangle */
-const nodeRequire = require('module')._load;
-/* eslint-enable no-underscore-dangle */
+const nodeRequire =
+  require('module')._load; // eslint-disable-line no-underscore-dangle
 const path = require('path');
+const validateCjbConfig = require('./validateCjbConfig.jsx');
 
 const cwd = process.cwd();
 
@@ -69,35 +69,6 @@ async function readCjbConfigAsync() {
 
   } catch (err) {
     utils.handleError(err);
-  }
-}
-
-/**
- * Validates a cjbConfig object.
- * For the list of validations performed, check the documentation for
- * `getCjbConfigAsync`.
- *
- * @param {object} config A cjbConfig object.
- * @returns {void}
- * @throws {Error} When a validation fails.
- */
-function validateCjbConfig(config) {
-  // `target`
-  if (!config.target) {
-    throw new Error('cjbConfig.js/jsx must define property `target`');
-  }
-  switch (config.target) {
-    case 'node':
-    case 'browser':
-      break;
-    default:
-      throw new Error('`target` in cjbConfig.js/jsx must be' +
-      ' one of "node" and "browser"');
-  }
-
-  // `webpackConfig`
-  if (!config.webpackConfig) {
-    throw new Error('cjbConfig.js/jsx must define property `webpackConfig`');
   }
 }
 

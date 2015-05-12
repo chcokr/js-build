@@ -1,14 +1,13 @@
 require('babel/polyfill');
 require('source-map-support').install();
 
-const runAsync = require('./runAsync.jsx');
+const runCLIAsync = require('./runCLIAsync.jsx');
 const utils = require('./utils.jsx');
 
 (async function () {
   try {
 
-    const mode = process.argv[2];
-    await runAsync(mode);
+    await runCLIAsync();
 
   } catch(err) {
     utils.handleError(err);

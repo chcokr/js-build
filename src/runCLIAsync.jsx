@@ -1,11 +1,11 @@
 const checkPathsExistAsync = require('./checkPathsExistAsync.jsx');
-const getModifiedWebpackConfigAsync =
-  require('./getModifiedWebpackConfigAsync.jsx');
+const getModifiedWebpackConfigsAsync =
+  require('./getModifiedWebpackConfigsAsync.jsx');
 const installPrecommitHookAsync = require('./installPrecommitHookAsync.jsx');
 const runBabelAsync = require('./runBabelAsync.jsx');
 const runEslintAsync = require('./runEslintAsync.jsx');
-const runWebpackAsync = require('./runWebpackAsync.jsx');
 const runWebpackDevServerAsync = require('./runWebpackDevServerAsync.jsx');
+const runWebpackAsync = require('./runWebpackAsync.jsx');
 const utils = require('./utils.jsx');
 
 /**
@@ -16,13 +16,13 @@ const utils = require('./utils.jsx');
  * - Try babel compilation
  * - Run ESLint
  * - Webpack:
- *  - if `mode` is `wds`, runs the webpack-dev-server
- *  - otherwise, creates the webpack bundle in dist/
+ *  - if `process.argv[2]` is `wds`, runs the webpack-dev-server with entry
+ *  point set to `process.argv[3]`
+ *  - otherwise, creates the webpack bundles for each entry point in dist/
  *
- * @param {string} mode Either "wds" or `undefined`.
  * @returns {void}
  */
-async function runAsync(mode) {
+async function runCLIAsync() {
   try {
 
     await checkPathsExistAsync();
@@ -33,11 +33,13 @@ async function runAsync(mode) {
 
     await runEslintAsync();
 
-    const webpackConfig = await getModifiedWebpackConfigAsync();
-    if (mode === 'wds') {
-      await runWebpackDevServerAsync(webpackConfig);
+    const webpackConfigs = await getModifiedWebpackConfigsAsync();
+    if (process.argv[2] === 'wds') {
+      const entryPointName = process.argv[3];
+      const config = webpackConfigs[entryPointName];
+      await runWebpackDevServerAsync(config);
     } else {
-      await runWebpackAsync(webpackConfig);
+      await runWebpackAsync(webpackConfigs);
     }
 
   } catch (err) {
@@ -45,4 +47,4 @@ async function runAsync(mode) {
   }
 }
 
-module.exports = runAsync;
+module.exports = runCLIAsync;

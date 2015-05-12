@@ -106,42 +106,37 @@ Thus running `babel-node src/index.jsx` for example will not work.
 So always expect to run what's inside `dist/`, instead of directly running
 what's inside `src/`.
 
-### `.config.js/jsx` - `module.exports.webpackConfig`
+### `.config.js/jsx` - `module.exports.webpackConfigs`
 
-Since CJB already uses its own webpack configuration internally, there must be a
-way for the target project to inject its own webpack configuration.
+CJB provides some default webpack configurations which are commonly found across
+some JS projects.
+For the full list of these, there's a relevant section further below.
+Thus there must be a way for the target project to inject its own custom webpack
+configuration.
 This is where a file named `cjb.config.js` or `.jsx` in the project root comes
 into play, which is required.
 This file is checked for compilation and is linted.
-In it, just export a property called `webpackConfig` as you wish, keeping in
-mind the caveat about to follow this example:
+In it, export a property called `webpackConfigs`.
+This property must be an object, each of whose keys must be the name of a
+webpack [entry point](http://webpack.github.io/docs/multiple-entry-points.html).
+You choose the name to whatever you want.
+Then each of these names must be mapped to an object.
+This object should look like a webpack configuration as documented
+[here](http://webpack.github.io/docs/multiple-entry-points.html), with the
+following caveats to keep in mind.
 
-```JS
-const webpack = require('webpack');
-const path = require('path');
-
-module.exports.webpackConfig = {
-  entry: './src/index.jsx',
-  output: {
-    path: path.resolve(__dirname, '..', 'dist'),
-    filename: 'index.js'
-  },
-  plugins: [
-    new webpack.BannerPlugin(
-      '#!/usr/bin/env node',
-      {raw: true, entryOnly: false}
-    )
-  ],
-  module: {
-    loaders: [
-      {test: /\.(eslintrc|babelrc)$/, loader: 'json'}
-    ]
-  }
-};
-```
-
-So the caveat is that CJB will inject a number of manipulations into the
-`webpackConfig` before using it with webpack.
+- Key `entry` must be mapped to a string, whereas [webpack originally also
+allows an array or an
+object](http://webpack.github.io/docs/configuration.html#entry).
+This is because `webpackConfigs` already identifies each entry point.
+So, why does CJB use its own multiple-entry-point syntax, when webpack's
+original array or object `entry` syntax already supports multiple entry points?
+While webpack does indeed multiple entry points to begin with, the rest of the
+configuration other than `entry` could not be changed flexibly according to
+what entry point.
+So a new syntax was necessary.
+- CJB makes a number of modifications to each entry point's webpack
+configuration before passing it into webpack.
 For the full list of manipulations, there's a relevant section further below.
 
 ### `cjb.config.js/jsx` - `module.exports.target`
@@ -231,9 +226,9 @@ To use the WDS support, `cjb.config.js/jsx` must export an integer property
 
 ### `cjb wds`
 
-Run `cjb wds` to run the WDS. This command will do everything that `cjb`
-does but replaces the webpack build step with its own, non-terminating server
-process.
+Run `cjb wds <entry_point_name>` to run the WDS.
+This command will do everything that `cjb` does but replaces the webpack build
+step with its own non-terminating server process.
 
 ### Hot module replacement is enabled
 

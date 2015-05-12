@@ -4,24 +4,30 @@ const Bluebird = require('bluebird');
 const webpackAsync = Bluebird.promisify(require('webpack'));
 
 /**
- * Runs webpack with the given configuration `webpackConfig` without making any
- * modifications to the configuration.
+ * Runs webpack with the given configurations `webpackConfigs` without making
+ * any modifications to the configuration.
  *
  * @async
- * @param {object} webpackConfig The webpackConfig which will *NOT* be modified
- * and will be directly used to run webpack
+ * @param {object} webpackConfigs The webpackConfigs which will *NOT* be
+ * modified and will be directly used to run webpack
  * @returns {void}
  */
-async function runWebpackAsync(webpackConfig) {
+async function runWebpackAsync(webpackConfigs) {
   try {
 
-    const stats = await webpackAsync(webpackConfig);
+    const entryPoints = Object.keys(webpackConfigs);
 
-    console.log(stats.toString({
-      cached: false,
-      cachedAssets: false,
-      colors: true
-    }));
+    for (let point of entryPoints) {
+      const configForThisEntryPoint = webpackConfigs[point];
+
+      const stats = await webpackAsync(configForThisEntryPoint);
+
+      console.log(stats.toString({
+        cached: false,
+        cachedAssets: false,
+        colors: true
+      }));
+    }
 
   } catch (err) {
     utils.handleError(err);

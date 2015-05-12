@@ -85,7 +85,7 @@ const nodeModules =
  * @returns {object} A new config object which all properties of `config`
  * have been copied into and the aforementioned modifications have been made to.
  */
-function createWebpackConfig(target, config) {
+function createSingleWebpackConfig(target, config) {
   const newConfig = Object.assign({}, config);
 
   if (target === 'node') {
@@ -139,4 +139,4 @@ function createWebpackConfig(target, config) {
   return newConfig;
 }
 
-module.exports = createWebpackConfig;
+module.exports = createSingleWebpackConfig;
