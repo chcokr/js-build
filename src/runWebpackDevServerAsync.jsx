@@ -1,6 +1,7 @@
 const getProjectEnvAsync = require('./getProjectEnvAsync.jsx');
 const utils = require('./utils.jsx');
 
+const _ = require('lodash');
 const Bluebird = require('bluebird');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
@@ -35,6 +36,9 @@ const WebpackDevServer = require('webpack-dev-server');
  */
 async function runWebpackDevServerAsync(webpackConfig) {
   try {
+    if (!_.isString(webpackConfig.entry)) {
+      throw new Error('`webpackConfig.entry` must be a string');
+    }
 
     const projectEnv = await getProjectEnvAsync();
 
@@ -52,13 +56,10 @@ async function runWebpackDevServerAsync(webpackConfig) {
 
     let devServerWebpackConfig = Object.assign({}, webpackConfig);
 
-    if (!devServerWebpackConfig.entry) {
-      devServerWebpackConfig.entry = [];
-    }
     devServerWebpackConfig.entry = [
       `webpack-dev-server/client?http://0.0.0.0:${port}`,
       'webpack/hot/dev-server',
-      ...devServerWebpackConfig.entry
+      devServerWebpackConfig.entry
     ];
 
     if (!devServerWebpackConfig.output) {
