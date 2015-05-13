@@ -68,7 +68,7 @@ async function runWebpackDevServerAsync(webpackConfig) {
     devServerWebpackConfig.output.publicPath = '/dist';
 
     const server = Bluebird.promisifyAll(new WebpackDevServer(
-      webpack(webpackConfig),
+      webpack(devServerWebpackConfig),
       {
         publicPath: devServerWebpackConfig.output.publicPath,
         hot: true
