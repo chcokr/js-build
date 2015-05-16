@@ -15,8 +15,6 @@ const nodeModules =
 /**
  * Creates a separate copy of the given `webpackConfig` object, makes the
  * following modifications to the object, and returns it.
- * (**NOTE**: this function should be used when `cjbConfig.js/jsx` exports a
- * property `target` of value `"node"`).
  *
  * Thanks [James Long](http://jlongster.com/Backend-Apps-with-Webpack--Part-I)
  * for the inspiration!

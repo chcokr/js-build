@@ -158,9 +158,13 @@ compilation and are linted.
 
 ### `devtool`
 
+In browser mode, `devtool` is not touched.
+
 In node mode, `devtool` is set to `"sourcemap"`.
 
 ### `externals`
+
+In browser mode, `externals` is not touched.
 
 In node mode, `externals` is set to:
 
@@ -173,8 +177,6 @@ const nodeModules =
       return prev;
     }, {});
 ```
-
-TODO: browser mode?
 
 ### `module.loaders`
 
@@ -204,8 +206,6 @@ new webpack.HotModuleReplacementPlugin()
 ```
 new webpack.NoErrorsPlugin()
 ```
-
-TODO: browser mode
 
 ### `target`
 
