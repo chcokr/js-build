@@ -229,6 +229,24 @@ To use the WDS support, `environment.js/jsx` must export an integer property
 Run `cjb wds <entry_point_name>` to run the WDS.
 This command will do everything that `cjb` does but replaces the webpack build
 step with its own non-terminating server process.
+You do not need to run `cjb` before or after.
+`cjb wds` takes care of everything.
+However, it does not generate files in `dist/` like `cjb` does.
+So don't use `cjb wds` for deploying.
+
+Here's an example of what happens when `CJB_WDS_PORT` is set to 3000 and an
+entry point is named `hello`:
+
+```
+cjb wds hello
+
+Server listening at localhost:3000
+```
+
+Then browse to `http://localhost:3000/webpack-dev-server/dist`.
+From here on, every time you save a file required by the entry point `hello`,
+the server will automatically update itself according to the changes,
+accelerating the development process.
 
 ### Hot module replacement is enabled
 
