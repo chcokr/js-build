@@ -1,10 +1,9 @@
 const webpack = require('webpack');
 
-module.exports.target = 'node';
-
 module.exports.webpackConfigs = {
   api: {
     entry: './src/api.jsx',
+    target: 'node',
     module: {
       loaders: [
         {test: /\.(eslintrc|babelrc)$/, loader: 'json'}
@@ -17,6 +16,7 @@ module.exports.webpackConfigs = {
   },
   bin: {
     entry: './src/bin.jsx',
+    target: 'node',
     module: {
       loaders: [
         {test: /\.(eslintrc|babelrc)$/, loader: 'json'}

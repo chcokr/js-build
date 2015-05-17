@@ -76,10 +76,8 @@ async function readCjbConfigAsync() {
  * Reads in the content of `cjbConfig.js/jsx`, compiles it with babel, and
  * return the object which the file exports.
  * Or if that has already been done once, just return the memoized object.
- * Also, in the process, makes the following validations on the obtained object.
- *
- * - `target` must be defined and be one of "node" and "browser"
- * - `webpackConfig` must be defined
+ * Also, in the process, validates the obtained object with the validations
+ * defined in `validateCjbConfig()`.
  *
  * @async
  * @returns {object} A (cached) object obtained from `cjbConfig.js/jsx`.

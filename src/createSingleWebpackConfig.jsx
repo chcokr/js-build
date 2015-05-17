@@ -21,15 +21,15 @@ const nodeModules =
  *
  * ### `devtool`
  *
- * In browser mode, `devtool` is not touched.
+ * If `config.target` is `"web"`, `devtool` is not touched.
  *
- * In node mode, `devtool` is set to `"sourcemap"`.
+ * If `config.target` is `"node"`, `devtool` is set to `"sourcemap"`.
  *
  * ### `externals`
  *
- * In browser mode, `externals` is not touched.
+ * If `config.target` is `"web"`, `externals` is not touched.
  *
- * In node mode, `externals` is set to:
+ * If `config.target` is `"node"`, `externals` is set to:
  *
  * ```JS
  * const nodeModules =
@@ -43,9 +43,9 @@ const nodeModules =
  *
  * ### `module.loaders`
  *
- * In node mode, the following loaders are added at the **end** of the
- * `module.loaders` array (order: the last one in this list will be the last one
- * in the `module.loaders` array).
+ * The following loaders are added at the **end** of the `module.loaders` array
+ * (order: the last one in this list will be the last one in the
+ * `module.loaders` array).
  *
  * ```JS
  * {test: /\.jsx$/, exclude: /node_modules/, loader: 'babel'}
@@ -60,8 +60,8 @@ const nodeModules =
  *
  * ### `plugins`
  *
- * In node mode, the following plugins are added at the **beginning** of the
- * `plugins` array, in this order:
+ * The following plugins are added at the **beginning** of the `plugins` array,
+ * in this order:
  *
  * ```
  * // Adding this plugin even when hot-loading is not used doesn't seem to hurt.
@@ -71,26 +71,18 @@ const nodeModules =
  * new webpack.NoErrorsPlugin()
  * ```
  *
- * ### `target`
- *
- * In browser mode, `target` is set to `"web"`.
- *
- * In node mode, `target` is set to `"node"`.
- *
- * @param {string} target The `target` property exported by cjbConfig.js/jsx
- * @param {webpackConfig} config The `webpackConfig` property of a
- * `cjbConfig.js/jsx`
+ * @param {object} config A single entry point's webpack configuration
  * @returns {object} A new config object which all properties of `config`
  * have been copied into and the aforementioned modifications have been made to.
  */
-function createSingleWebpackConfig(target, config) {
+function createSingleWebpackConfig(config) {
   const newConfig = Object.assign({}, config);
 
-  if (target === 'node') {
+  if (config.target === 'node') {
     newConfig.devtool = 'sourcemap';
   }
 
-  if (target === 'node') {
+  if (config.target === 'node') {
     newConfig.externals = nodeModules;
   }
 
@@ -127,12 +119,6 @@ function createSingleWebpackConfig(target, config) {
     new webpack.NoErrorsPlugin(),
     ...newConfig.plugins
   ];
-
-  if (target === 'browser') {
-    newConfig.target = 'web';
-  } else if (target === 'node') {
-    newConfig.target = 'node';
-  }
 
   return newConfig;
 }

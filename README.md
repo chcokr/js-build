@@ -139,13 +139,31 @@ So a new syntax was necessary.
 configuration before passing it into webpack.
 For the full list of manipulations, there's a relevant section further below.
 
-### `cjb.config.js/jsx` - `module.exports.target`
+### Every entry point must specify `target`
 
-Before diving into what the manipulations are, it should be pointed out that
-webpack configurations (and many other things) look quite different when
-targeting a node environment and a browser environment.
-This is why `cjb.config.js/jsx` should export a property called `target`, which
-should be either `"node"` or `"browser"`.
+Webpack has a notion of
+[targets](http://webpack.github.io/docs/configuration.html#target).
+Each entry point specified in `cjbConfig.js/jsx`'s `webpackConfigs` must declare
+what its webpack target is, by defining property `target`.
+For example:
+
+```JS
+module.exports.webpackConfigs = {
+  coolEntryPoint: {
+    entry: './src/cool.js',
+    target: 'node'
+  }
+};
+```
+
+Currently, `target` can only be either `"node"` or `"web"`.
+Other webpack targets such as `"webworker"` will be supported in the future,
+should there be a need for them.
+
+CJB requires `target` be defined because, when it modifies each entry point's
+webpack configuration, the modifications are slightly different depending on
+the `target`.
+For more details, refer to the section below on the list of modifications.
 
 ### `__test__/`
 
@@ -154,19 +172,19 @@ This is where all tests go.
 All files with the extension `.js` or `.jsx` in this directory are checked for
 compilation and are linted.
 
-## List of `webpackConfig` manipulations
+## List of `webpackConfigs` manipulations
 
 ### `devtool`
 
-In browser mode, `devtool` is not touched.
+If the entry point's `target` is `"web"`, `devtool` is not touched.
 
-In node mode, `devtool` is set to `"sourcemap"`.
+If the entry point's `target` is `"node"`, `devtool` is set to `"sourcemap"`.
 
 ### `externals`
 
-In browser mode, `externals` is not touched.
+If the entry point's `target` is `"web"`, `externals` is not touched.
 
-In node mode, `externals` is set to:
+If the entry point's `target` is `"node"`, `externals` is set to:
 
 ```JS
 const nodeModules =
@@ -180,9 +198,9 @@ const nodeModules =
 
 ### `module.loaders`
 
-In node mode, the following loaders are added at the **end** of the
-`module.loaders` array (order: the last one in this list will be the last one in
-the `module.loaders` array).
+The following loaders are added at the **end** of the `module.loaders` array
+(order: the last one in this list will be the last one in the `module.loaders`
+array).
 
 ```JS
 {test: /\.jsx$/, exclude: /node_modules/, loader: 'babel'}
@@ -197,8 +215,8 @@ the `module.loaders` array).
 
 ### `plugins`
 
-In node mode, the following plugins are added at the **beginning** of the
-`plugins` array, in this order:
+The following plugins are added at the **beginning** of the `plugins` array, in
+this order:
 
 ```
 new webpack.HotModuleReplacementPlugin()
@@ -206,12 +224,6 @@ new webpack.HotModuleReplacementPlugin()
 ```
 new webpack.NoErrorsPlugin()
 ```
-
-### `target`
-
-In node mode, `target` is set to `"node"`.
-
-In browser mode, `target` is set to `"web"`.
 
 ## webpack-dev-server support
 
