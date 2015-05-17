@@ -172,6 +172,26 @@ This is where all tests go.
 All files with the extension `.js` or `.jsx` in this directory are checked for
 compilation and are linted.
 
+## Stuff gets added the beginning of the entry file
+
+Across projects, there are some common things like polyfills that have to be
+present in the beginning of an entry file.
+A good example is `require('babel/polyfill');`.
+CJB takes care of this repetitiveness by creating a temporary file, copying over
+the content of the specified entry file, adding the following stuff at the
+beginning of the temporary file, and running webpack from the temporary file.
+This file is automatically deleted when webpack is done running.
+
+- If `webpackConfig.output.libraryTarget` is defined, nothing significant will
+be added.
+- Assume `webpackConfig.output.libraryTarget` is undefined from here on.
+- If the entry point's `target` is `"web"`,
+`require('chcokr-js-build/dist/polyfill-web')` is added, which takes care of
+`require('babel/polyfill')`.
+- If the entry point's `target` is `"node"`,
+`require('chcokr-js-build/dist/polyfill-node')` is added, which takes care of
+`require('babel/polyfill')` and `require('source-map-support').install()`. 
+
 ## List of `webpackConfigs` manipulations
 
 ### `devtool`
@@ -270,14 +290,15 @@ support.
 
 #### `entry`
 
-The following strings are added to the **beginning** of the `entry` array.
+`entry` is set to the following:
 
 ```
-webpack-dev-server/client?http://0.0.0.0:<wdsPort in cjbConfig.js/jsx>
-```
-
-```
-webpack/hot/dev-server
+[
+  'webpack-dev-server/client?' +
+    'http://0.0.0.0:<CJB_WDS_PORT in environment.js/jsx>',
+  'webpack/hot/dev-server',
+  '<absolute path of the temporary entry file>'
+]
 ```
 
 #### `output.publicPath`

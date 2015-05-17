@@ -1,4 +1,6 @@
 const getProjectEnvAsync = require('./getProjectEnvAsync.jsx');
+const generateModifiedEntryFileAsync =
+  require('./generateModifiedEntryFileAsync.jsx');
 const utils = require('./utils.jsx');
 
 const _ = require('lodash');
@@ -7,20 +9,24 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
 /**
- * Makes the following modifications to `webpackConfig`, and runs the
- * webpack-dev-server using that new configuration on the port specified in
- * `environment.js/jsx`'s exported property `CJB_WDS_PORT`.
+ * Generates a temporary copy of the entry file defined in `webpackConfig`'s
+ * property `entry` using `generateModifiedEntryFileAsync()`, sets the `entry`
+ * to the absolute path of the temporary file, makes the following further
+ * modifications to the configuration, and runs webpack-dev-server with that
+ * final configuration, on the port specified in `environment.js/jsx`'s exported
+ * property `CJB_WDS_PORT`.
  *
  * ### `entry`
  *
- * The following strings are added to the **beginning** of the `entry` array.
+ * `entry` is set to the following:
  *
  * ```
- * webpack-dev-server/client?http://0.0.0.0:<CJB_WDS_PORT in environment.js/jsx>
- * ```
- *
- * ```
- * webpack/hot/dev-server
+ * [
+ *   'webpack-dev-server/client?' +
+ *     'http://0.0.0.0:<CJB_WDS_PORT in environment.js/jsx>',
+ *   'webpack/hot/dev-server',
+ *   '<absolute path of the temporary entry file>'
+ * ]
  * ```
  *
  * ### `output.publicPath`
@@ -56,10 +62,13 @@ async function runWebpackDevServerAsync(webpackConfig) {
 
     let devServerWebpackConfig = Object.assign({}, webpackConfig);
 
+    const newEntryFilePath =
+      await generateModifiedEntryFileAsync(devServerWebpackConfig);
+
     devServerWebpackConfig.entry = [
       `webpack-dev-server/client?http://0.0.0.0:${port}`,
       'webpack/hot/dev-server',
-      devServerWebpackConfig.entry
+      newEntryFilePath
     ];
 
     if (!devServerWebpackConfig.output) {
