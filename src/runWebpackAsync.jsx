@@ -8,40 +8,40 @@ const webpackAsync = Bluebird.promisify(require('webpack'));
 
 /**
  * For each entry point in `webpackConfigs`, generates a temporary copy of the
- * entry file using `generateModifiedEntryFileAsync()`, runs webpack with the
- * same configuration as in `webpackConfigs` except `entry` switched out with
- * the path of the temporary entry file.
+ * entry file using
+ * `generateModifiedEntryFileAsync(webpackConfig, textToAddAtTopOfEntryFile)`,
+ * runs webpack with the same configuration as in `webpackConfig` except `entry`
+ * switched out with the path of the temporary entry file.
  * When webpack is done running, the temporary file is deleted.
  *
  * @async
- * @param {object} webpackConfigs The webpackConfigs as would be defined in
- * `cjbConfig.js/jsx`
- * @returns {void}
- */
-async function runWebpackAsync(webpackConfigs) {
+ * @param {object} webpackConfig The webpackConfig of an entry point as would be
+ * defined in `cjbConfig.js/jsx`.
+ * @param {string} textToAddAtTopOfEntryFile The text to append at the top of
+ * the temporary entry file.
+* @returns {void}
+*/
+async function runWebpackAsync(webpackConfig, textToAddAtTopOfEntryFile = '') {
   try {
 
-    const entryPoints = Object.keys(webpackConfigs);
+    const newEntryFilePath =
+      await generateModifiedEntryFileAsync(
+        webpackConfig,
+        textToAddAtTopOfEntryFile
+      );
 
-    for (let point of entryPoints) {
-      const configForThisEntryPoint = webpackConfigs[point];
+    let newEntryFileConfig = Object.assign({}, webpackConfig);
+    newEntryFileConfig.entry = newEntryFilePath;
 
-      const newEntryFilePath =
-        await generateModifiedEntryFileAsync(configForThisEntryPoint);
+    const stats = await webpackAsync(newEntryFileConfig);
 
-      let newEntryFileConfig = Object.assign({}, configForThisEntryPoint);
-      newEntryFileConfig.entry = newEntryFilePath;
+    await fs.unlinkAsync(newEntryFilePath);
 
-      const stats = await webpackAsync(newEntryFileConfig);
-
-      await fs.unlinkAsync(newEntryFilePath);
-
-      console.log(stats.toString({
-        cached: false,
-        cachedAssets: false,
-        colors: true
-      }));
-    }
+    console.log(stats.toString({
+      cached: false,
+      cachedAssets: false,
+      colors: true
+    }));
 
   } catch (err) {
     utils.handleError(err);

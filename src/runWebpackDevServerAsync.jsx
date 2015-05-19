@@ -10,11 +10,12 @@ const WebpackDevServer = require('webpack-dev-server');
 
 /**
  * Generates a temporary copy of the entry file defined in `webpackConfig`'s
- * property `entry` using `generateModifiedEntryFileAsync()`, sets the `entry`
- * to the absolute path of the temporary file, makes the following further
- * modifications to the configuration, and runs webpack-dev-server with that
- * final configuration, on the port specified in `environment.js/jsx`'s exported
- * property `CJB_WDS_PORT`.
+ * property `entry` using
+ * `generateModifiedEntryFileAsync(webpackConfig, textToAddAtTopOfEntryFile)`,
+ * sets the `entry` to the absolute path of the temporary file, makes the
+ * following further modifications to the configuration, and runs
+ * webpack-dev-server with that final configuration, on the port specified by
+ * `environment.js/jsx`'s exported property `CJB_WDS_PORT`.
  *
  * ### `entry`
  *
@@ -40,7 +41,10 @@ const WebpackDevServer = require('webpack-dev-server');
  * `CJB_WDS_PORT`
  * @throws {Error} When `CJB_WDS_PORT` isn't an integer
  */
-async function runWebpackDevServerAsync(webpackConfig) {
+async function runWebpackDevServerAsync(
+  webpackConfig,
+  textToAddAtTopOfEntryFile = ''
+) {
   try {
     if (!_.isString(webpackConfig.entry)) {
       throw new Error('`webpackConfig.entry` must be a string');
@@ -63,7 +67,10 @@ async function runWebpackDevServerAsync(webpackConfig) {
     let devServerWebpackConfig = Object.assign({}, webpackConfig);
 
     const newEntryFilePath =
-      await generateModifiedEntryFileAsync(devServerWebpackConfig);
+      await generateModifiedEntryFileAsync(
+        devServerWebpackConfig,
+        textToAddAtTopOfEntryFile
+      );
 
     devServerWebpackConfig.entry = [
       `webpack-dev-server/client?http://0.0.0.0:${port}`,

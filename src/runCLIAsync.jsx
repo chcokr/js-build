@@ -18,7 +18,22 @@ const utils = require('./utils.jsx');
  * - Webpack:
  *  - if `process.argv[2]` is `wds`, runs the webpack-dev-server with entry
  *  point set to `process.argv[3]`
- *  - otherwise, creates the webpack bundles for each entry point in dist/
+ *  - otherwise, creates the webpack bundles for each entry point in dist/.
+ *  Note that the following text gets added to the top of a temporary copy of
+ *  the entry file.
+ *  This temporary file will be used as the entry point when webpack is invoked.
+ *
+ *   - If the entry point's `output.libraryTarget` is defined, nothing
+ *   significant will be added.
+ *   - Assume `output.libraryTarget` is undefined from here on.
+ *   - If `target` is `"node"`, the following is added.
+ *   ```JS
+ *   require('chcokr-js-build/dist/polyfill-node');
+ *   ```
+ *   - If `target` is `"web"`, the following is added.
+ *   ```JS
+ *   require('chcokr-js-build/dist/polyfill-web');
+ *   ```
  *
  * @returns {void}
  */
@@ -37,9 +52,25 @@ async function runCLIAsync() {
     if (process.argv[2] === 'wds') {
       const entryPointName = process.argv[3];
       const config = webpackConfigs[entryPointName];
-      await runWebpackDevServerAsync(config);
+
+      await runWebpackDevServerAsync(
+        config,
+        '// Begin: CJB-generated code\n' +
+          `require('chcokr-js-build/dist/polyfill-${config.target}');` + '\n' +
+          '// End: CJB-generated code\n'
+      );
     } else {
-      await runWebpackAsync(webpackConfigs);
+      const entryPointNames = Object.keys(webpackConfigs);
+      for (let pointName of entryPointNames) {
+        const config = webpackConfigs[pointName];
+        await runWebpackAsync(
+          config,
+          '// Begin: CJB-generated code\n' +
+            `require('chcokr-js-build/dist/polyfill-${config.target}');` +
+            '\n' +
+            '// End: CJB-generated code\n'
+        );
+      }
     }
 
   } catch (err) {
