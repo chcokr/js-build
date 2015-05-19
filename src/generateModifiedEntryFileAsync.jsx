@@ -14,12 +14,8 @@ const path = require('path');
  * @returns {string} The absolute path of the temporary entry file.
  */
 async function generateModifiedEntryFileAsync(webpackConfig, text = '') {
-  let textToAdd = '// Begin: CJB-generated code\n';
-  textToAdd += text;
-  textToAdd += '// End: CJB-generated code\n';
-
   const entryFileContent = await fs.readFileAsync(webpackConfig.entry);
-  const newEntryFileContent = [textToAdd, entryFileContent].join('\n');
+  const newEntryFileContent = [text, entryFileContent].join('\n');
 
   const entryFilePath = path.resolve(webpackConfig.entry);
   const entryFileBaseName = path.basename(entryFilePath);
