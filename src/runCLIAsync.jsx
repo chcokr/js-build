@@ -9,6 +9,36 @@ const runWebpackAsync = require('./runWebpackAsync.jsx');
 const utils = require('./utils.jsx');
 
 /**
+ * Given a `webpackConfig` as follows:
+ *
+ * ```JS
+ * {
+ *   output: {libraryTarget: 'something'},
+ *   target: 'node'
+ * }
+ * ```
+ *
+ * returns the following string:
+ *
+ * ```
+ * // Begin: CJB-generated code
+ * require('chcokr-js-build/dist/polyfill-something');
+ * // End: CJB-generated code
+ * ```
+ *
+ * @param {object} webpackConfig The webpack configuration object of an entry
+ * file (as would be defined inside cjbConfig.js/jsx).
+ * @returns {string} The text to add to the top of the temporary entry file.
+ */
+function getTextToAddToTopOfTempEntryFile(webpackConfig) {
+  return webpackConfig.output.libraryTarget ? '' :
+    '// Begin: CJB-generated code\n' +
+      `require('chcokr-js-build/dist/polyfill-${webpackConfig.target}');` +
+      '\n' +
+      '// End: CJB-generated code\n';
+}
+
+/**
  * Runs the following tasks in order:
  *
  * - Check if certain paths exist
@@ -55,9 +85,7 @@ async function runCLIAsync() {
 
       await runWebpackDevServerAsync(
         config,
-        '// Begin: CJB-generated code\n' +
-          `require('chcokr-js-build/dist/polyfill-${config.target}');` + '\n' +
-          '// End: CJB-generated code\n'
+        getTextToAddToTopOfTempEntryFile(config)
       );
     } else {
       const entryPointNames = Object.keys(webpackConfigs);
@@ -65,10 +93,7 @@ async function runCLIAsync() {
         const config = webpackConfigs[pointName];
         await runWebpackAsync(
           config,
-          '// Begin: CJB-generated code\n' +
-            `require('chcokr-js-build/dist/polyfill-${config.target}');` +
-            '\n' +
-            '// End: CJB-generated code\n'
+          getTextToAddToTopOfTempEntryFile(config)
         );
       }
     }
