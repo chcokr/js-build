@@ -36,6 +36,8 @@ const WebpackDevServer = require('webpack-dev-server');
  *
  * @param {object} webpackConfig The webpackConfig which will be modified and
  * then be used to run webpack-dev-server
+ * @param {string} textToAddAtTopOfEntryFile The text to append at the top of
+ * the temporary entry file.
  * @returns {void}
  * @throws {Error} When environment.js/jsx doesn't export property
  * `CJB_WDS_PORT`
