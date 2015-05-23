@@ -1,5 +1,9 @@
 # Ignore everything in this directory
 *
-# Except this file and the polyfills
+# Except the following
 !.gitignore
+!babel-loader.js
+!json-loader.js
 !polyfill-*
+!webpack.js
+!webpack-dev-server.js

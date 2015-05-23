@@ -5,6 +5,7 @@ const utils = require('./utils.jsx');
 
 const _ = require('lodash');
 const Bluebird = require('bluebird');
+const path = require('path');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
@@ -23,9 +24,9 @@ const WebpackDevServer = require('webpack-dev-server');
  *
  * ```
  * [
- *   'webpack-dev-server/client?' +
+ *   path.join(packagePaths['webpack-dev-server'], 'client') + '?' +
  *     'http://0.0.0.0:<CJB_WDS_PORT in environment.js/jsx>',
- *   'webpack/hot/dev-server',
+ *   path.join(packagePaths.webpack, 'hot', 'dev-server'),
  *   '<absolute path of the temporary entry file>'
  * ]
  * ```
@@ -38,6 +39,9 @@ const WebpackDevServer = require('webpack-dev-server');
  * then be used to run webpack-dev-server
  * @param {string} textToAddAtTopOfEntryFile The text to append at the top of
  * the temporary entry file.
+ * @param {object} packagePaths A map from the name of an npm module to the
+ * path where that module can be found.
+ * `webpack` and `webpack-dev-server` are the modules that must be defined.
  * @returns {void}
  * @throws {Error} When environment.js/jsx doesn't export property
  * `CJB_WDS_PORT`
@@ -45,9 +49,19 @@ const WebpackDevServer = require('webpack-dev-server');
  */
 async function runWebpackDevServerAsync(
   webpackConfig,
-  textToAddAtTopOfEntryFile = ''
+  textToAddAtTopOfEntryFile,
+  packagePaths
 ) {
   try {
+
+    for (let moduleName of ['webpack', 'webpack-dev-server']) {
+      if (!packagePaths[moduleName]) {
+        throw new Error(`Path for module "${moduleName}" must be` +
+          ` specified by defining property \`${moduleName}\` in argument` +
+          ' `packagePaths`');
+      }
+    }
+
     if (!_.isString(webpackConfig.entry)) {
       throw new Error('`webpackConfig.entry` must be a string');
     }
@@ -74,9 +88,13 @@ async function runWebpackDevServerAsync(
         textToAddAtTopOfEntryFile
       );
 
+    const wdsClientPath =
+      path.join(packagePaths['webpack-dev-server'], 'client');
+    const webpackHotDevServerPath =
+      path.join(packagePaths.webpack, 'hot', 'dev-server');
     devServerWebpackConfig.entry = [
-      `webpack-dev-server/client?http://0.0.0.0:${port}`,
-      'webpack/hot/dev-server',
+      `${wdsClientPath}?http://0.0.0.0:${port}`,
+      webpackHotDevServerPath,
       newEntryFilePath
     ];
 

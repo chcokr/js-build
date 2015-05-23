@@ -222,11 +222,17 @@ The following loaders are added at the **end** of the `module.loaders` array
 (order: the last one in this list will be the last one in the `module.loaders`
 array).
 
-```JS
-{test: /\.jsx$/, exclude: /node_modules/, loader: 'babel'}
 ```
-```JS
-{test: /\.json$/, loader: 'json'}
+{
+  test: /\.jsx$/, exclude: /node_modules/,
+  loader: <path to a local copy of babel-loader>
+}
+```
+```
+{
+  test: /\.json$/,
+  loader: <path to a local copy of json-loader>
+}
 ```
 
 ### `output.path`
@@ -294,9 +300,9 @@ support.
 
 ```
 [
-  'webpack-dev-server/client?' +
+  '<path to a local copy of webpack-dev-server>/client?' +
     'http://0.0.0.0:<CJB_WDS_PORT in environment.js/jsx>',
-  'webpack/hot/dev-server',
+  '<path to a local copy of webpack>/hot/dev-server',
   '<absolute path of the temporary entry file>'
 ]
 ```

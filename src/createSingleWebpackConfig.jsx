@@ -48,10 +48,10 @@ const nodeModules =
  * `module.loaders` array).
  *
  * ```JS
- * {test: /\.jsx$/, exclude: /node_modules/, loader: 'babel'}
+ * {test: /\.jsx$/, exclude: /node_modules/, loader: loaderPaths.babel}
  * ```
  * ```JS
- * {test: /\.json$/, loader: 'json'}
+ * {test: /\.json$/, loader: loaderPaths.json}
  * ```
  *
  * ### `output.path`
@@ -72,10 +72,21 @@ const nodeModules =
  * ```
  *
  * @param {object} config A single entry point's webpack configuration
+ * @param {object} loaderPaths A map from the name of a webpack loader to the
+ * path where that loader can be found.
+ * `babel` and `json` are the loaders that must be defined.
  * @returns {object} A new config object which all properties of `config`
  * have been copied into and the aforementioned modifications have been made to.
  */
-function createSingleWebpackConfig(config) {
+function createSingleWebpackConfig(config, loaderPaths) {
+  for (let loaderName of ['babel', 'json']) {
+    if (!loaderPaths[loaderName]) {
+      throw new Error(`Path for webpack loader "${loaderName}" must be` +
+        ` specified by defining property \`${loaderName}\` in argument` +
+        ' `loaderPaths`');
+    }
+  }
+
   const newConfig = Object.assign({}, config);
 
   if (config.target === 'node') {
@@ -97,9 +108,9 @@ function createSingleWebpackConfig(config) {
     {
       test: /\.jsx$/,
       exclude: /node_modules/,
-      loader: 'babel?' + JSON.stringify(require('./.babelrc'))
+      loader: loaderPaths.babel + '?' + JSON.stringify(require('./.babelrc'))
     },
-    {test: /\.json$/, loader: 'json'}
+    {test: /\.json$/, loader: loaderPaths.json}
   ];
 
   if (!newConfig.output) {

@@ -5,9 +5,6 @@ module.exports.createSingleWebpackConfig =
 
 module.exports.getCjbConfigAsync = require('./getCjbConfigAsync.jsx');
 
-module.exports.getModifiedWebpackConfigsAsync =
-  require('./getModifiedWebpackConfigsAsync.jsx');
-
 module.exports.getProjectEnvAsync = require('./getProjectEnvAsync.jsx');
 
 module.exports.installPrecommitHookAsync =
