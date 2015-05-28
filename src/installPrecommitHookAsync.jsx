@@ -10,7 +10,6 @@ const cwd = process.cwd();
  * Copies the content of `./gitPrecommitHook.sh` over to
  * `.git/hooks/pre-commit` and sets the chmod to 755.
  *
- * @async
  * @returns {void}
  */
 async function installPrecommitHookAsync() {

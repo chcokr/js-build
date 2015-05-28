@@ -22,7 +22,6 @@ function handleError(err) {
 /**
  * Checks whether an absolute path exists.
  *
- * @async
  * @param {string} filePath The absolute path.
  * @returns {boolean} Whether the absolute path exists.
  */

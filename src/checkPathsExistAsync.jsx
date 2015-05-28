@@ -18,7 +18,6 @@ const pathExistsAsync = utils.pathExistsAsync;
  * - src/
  * - __tests__/
  *
- * @async
  * @returns {void}
  * @throws {Error}
  */

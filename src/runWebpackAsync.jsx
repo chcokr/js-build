@@ -14,7 +14,6 @@ const webpackAsync = Bluebird.promisify(require('webpack'));
  * switched out with the path of the temporary entry file.
  * When webpack is done running, the temporary file is deleted.
  *
- * @async
  * @param {object} webpackConfig The webpackConfig of an entry point as would be
  * defined in `cjbConfig.js/jsx`.
  * @param {string} textToAddAtTopOfEntryFile The text to append at the top of

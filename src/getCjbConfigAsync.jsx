@@ -20,7 +20,6 @@ let cjbConfigCache = null;
  * For a function that takes care of caching as well, use
  * `getCjbConfigAsync` instead.
  *
- * @async
  * @returns {object} An object obtained from `cjbConfig.js/jsx`.
  * @throws {Error} When Babel cannot compile the contents of `cjbConfig.js/jsx`.
  */
@@ -79,7 +78,6 @@ async function readCjbConfigAsync() {
  * Also, in the process, validates the obtained object with the validations
  * defined in `validateCjbConfig()`.
  *
- * @async
  * @returns {object} A (cached) object obtained from `cjbConfig.js/jsx`.
  * @throws {Error} When Babel cannot compile the contents of `cjbConfig.js/jsx`.
  * @throws {Error} When a validation on the obtained cjbConfig object fails.

@@ -34,7 +34,6 @@ function printEslintErrorMsgObjs(objs) {
  * - Files with the extension `.js` or `.jsx` in src/
  * - Files with the extension `.js` or `.jsx` in __tests__/
  *
- * @async
  * @returns {void}
  * @throws {Error} When ESLint has detected at least one error or one warning
  * in the aforementioned files.

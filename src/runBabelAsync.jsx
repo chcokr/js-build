@@ -17,7 +17,6 @@ const cwd = process.cwd();
  * - Files with the extension `.js` or `.jsx` in src/
  * - Files with the extension `.js` or `.jsx` in __tests__/
  *
- * @async
  * @returns {void}
  * @throws {Error} When Babel has detected at least one error or one warning
  * in the aforementioned files.
