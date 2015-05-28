@@ -1,3 +1,5 @@
+const assertPackageJsonDepVerGteq =
+  require('./assertPackageJsonDepVerGteq.jsx');
 const checkPathsExistAsync = require('./checkPathsExistAsync.jsx');
 const createSingleWebpackConfig = require('./createSingleWebpackConfig.jsx');
 const getCjbConfigAsync = require('./getCjbConfigAsync.jsx');
@@ -7,11 +9,13 @@ const runEslintAsync = require('./runEslintAsync.jsx');
 const runWebpackDevServerAsync = require('./runWebpackDevServerAsync.jsx');
 const runWebpackAsync = require('./runWebpackAsync.jsx');
 const utils = require('./utils.jsx');
+const validatePackageJson = require('./validatePackageJson.jsx');
 
 const path = require('path');
 
 const cwd = process.cwd();
 const thisProjectName = require('../package.json').name;
+const thisProjectVersion = require('../package.json').version;
 
 /**
  * Given a `webpackConfig` as follows:
@@ -47,6 +51,10 @@ function getTextToAddToTopOfTempEntryFile(webpackConfig) {
  * Runs the following tasks in order:
  *
  * - Check if certain paths exist
+ * - Check if package.json lists this project as a devDepedency, with a version
+ * greater than or equal to this project's version (as defined in this project's
+ * package.json)
+ * - Validate package.json (see validatePackageJson.jsx)
  * - Install the Git pre-commit hook
  * - Try babel compilation
  * - Run ESLint
@@ -90,6 +98,10 @@ async function runCLIAsync() {
   try {
 
     await checkPathsExistAsync();
+
+    assertPackageJsonDepVerGteq(thisProjectVersion, thisProjectName, true);
+
+    validatePackageJson();
 
     await installPrecommitHookAsync();
 

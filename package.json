@@ -17,10 +17,12 @@
     "babel-core": "^5.2.17",
     "babel-eslint": "^3.0.1",
     "bluebird": "^2.9.25",
+    "chcokr-js-build": "0.0.0",
     "eslint": "^0.20.0",
     "glob": "^5.0.5",
     "lodash": "^3.8.0",
-    "raw-loader": "^0.5.1"
+    "raw-loader": "^0.5.1",
+    "semver": "^4.3.4"
   },
   "scripts": {},
   "author": "YJ Yang <chcokr@gmail.com>",

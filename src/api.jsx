@@ -1,3 +1,6 @@
+module.exports.assertPackageJsonDepVerGteq =
+  require('./assertPackageJsonDepVerGteq.jsx');
+
 module.exports.checkPathsExistAsync = require('./checkPathsExistAsync.jsx');
 
 module.exports.createSingleWebpackConfig =

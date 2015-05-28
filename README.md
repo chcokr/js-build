@@ -57,6 +57,13 @@ hook that prevents you from committing unless the following rules are all met.
 So be careful if you have set up your own pre-commit hook in the project
 you're going to use `cjb` against.
 
+### CJB must be a devDependency
+
+The project's `package.json` must list `"chcokr-js-build"` in
+`"devDependencies"`.
+The listed version must be at least as high as the version of the CJB CLI you're
+using (defined in this repository's `package.json`).
+
 ### `README.md`
 
 The project must contain documentation in `README.md`.
