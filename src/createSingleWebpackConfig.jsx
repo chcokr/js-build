@@ -4,6 +4,14 @@ const webpack = require('webpack');
 
 const cwd = process.cwd();
 
+// This try-catch block prevents CJB from crashing because of the
+// fs.readdirSync('node_modules') right below.
+try {
+  fs.statSync('node_modules');
+} catch (unused) {
+  throw new Error('Project root must have a directory named node_modules.');
+}
+
 const nodeModules =
   fs.readdirSync('node_modules')
     .filter(x => ['.bin'].indexOf(x) === -1)
