@@ -125,6 +125,11 @@ async function runCLIAsync() {
 
     if (process.argv[2] === 'wds') {
       const entryPointName = process.argv[3];
+      if (entryPointName === undefined) {
+        throw new Error('The command `cjb wds` needs to specify an entry' +
+          ' point. For example: `cjb wds entry_point`.');
+      }
+
       const config = webpackConfigs[entryPointName];
 
       await runWebpackDevServerAsync(
