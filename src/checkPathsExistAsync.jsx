@@ -9,6 +9,8 @@ const pathExistsAsync = utils.pathExistsAsync;
  * Checks whether all of the following paths exist, and throws an Error as soon
  * as one of them is not found.
  *
+ * - package.json
+ * - node_modules/
  * - Either cjbConfig.js or cjbConfig.jsx
  * - Either environment.js or environment.jsx
  * - .git/
@@ -20,7 +22,22 @@ const pathExistsAsync = utils.pathExistsAsync;
  * @returns {void}
  * @throws {Error}
  */
-async function checkPathsExistAsync() {
+async function checkPathsExistAsync() { // eslint-disable-line max-statements
+  console.log('Checking if package.json exists');
+  const packageJsonExists =
+    await pathExistsAsync(path.resolve(cwd, 'package.json'));
+  if (!packageJsonExists) {
+    throw new Error('Project root must have a file named package.json');
+  }
+
+  console.log('Checking if node_modules exists');
+  const nodeModulesExists =
+    await pathExistsAsync(path.resolve(cwd, 'node_modules'));
+  if (!nodeModulesExists) {
+    throw new Error('Project root must have a directory named node_modules.' +
+      ' You probably need to run `npm install`.');
+  }
+
   console.log('Checking if cjbConfig.{js,jsx} exists');
   const cjbConfigJsExists =
     await pathExistsAsync(path.resolve(cwd, 'cjbConfig.js'));
