@@ -1,11 +1,19 @@
 const _ = require('lodash');
+const fs = require('fs');
 const nodeRequire =
   require('module')._load; // eslint-disable-line no-underscore-dangle
 const path = require('path');
 const semver = require('semver');
 
 const cwd = process.cwd();
-const projPackageJson = nodeRequire(path.join(cwd, 'package.json'));
+
+const projPackageJsonPath = path.join(cwd, 'package.json');
+try {
+  fs.statSync(projPackageJsonPath);
+} catch (unused) {
+  throw new Error('Project root must have a file named package.json.');
+}
+const projPackageJson = nodeRequire(projPackageJsonPath);
 
 /**
  * Asserts that depName is listed in the target project's package.json's
