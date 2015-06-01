@@ -21,30 +21,24 @@ const webpackAsync = Bluebird.promisify(require('webpack'));
 * @returns {void}
 */
 async function runWebpackAsync(webpackConfig, textToAddAtTopOfEntryFile = '') {
-  try {
+  const newEntryFilePath =
+    await generateModifiedEntryFileAsync(
+      webpackConfig,
+      textToAddAtTopOfEntryFile
+    );
 
-    const newEntryFilePath =
-      await generateModifiedEntryFileAsync(
-        webpackConfig,
-        textToAddAtTopOfEntryFile
-      );
+  let newEntryFileConfig = Object.assign({}, webpackConfig);
+  newEntryFileConfig.entry = newEntryFilePath;
 
-    let newEntryFileConfig = Object.assign({}, webpackConfig);
-    newEntryFileConfig.entry = newEntryFilePath;
+  const stats = await webpackAsync(newEntryFileConfig);
 
-    const stats = await webpackAsync(newEntryFileConfig);
+  await fs.unlinkAsync(newEntryFilePath);
 
-    await fs.unlinkAsync(newEntryFilePath);
-
-    console.log(stats.toString({
-      cached: false,
-      cachedAssets: false,
-      colors: true
-    }));
-
-  } catch (err) {
-    utils.handleError(err);
-  }
+  console.log(stats.toString({
+    cached: false,
+    cachedAssets: false,
+    colors: true
+  }));
 }
 
 module.exports = runWebpackAsync;

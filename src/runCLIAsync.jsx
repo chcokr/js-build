@@ -95,68 +95,62 @@ function getTextToAddToTopOfTempEntryFile(webpackConfig) {
  * @returns {void}
  */
 async function runCLIAsync() {
-  try {
+  await checkPathsExistAsync();
 
-    await checkPathsExistAsync();
+  assertPackageJsonDepVerGteq(thisProjectVersion, thisProjectName, true);
 
-    assertPackageJsonDepVerGteq(thisProjectVersion, thisProjectName, true);
+  validatePackageJson();
 
-    validatePackageJson();
+  await installPrecommitHookAsync();
 
-    await installPrecommitHookAsync();
+  await runBabelAsync();
 
-    await runBabelAsync();
+  await runEslintAsync();
 
-    await runEslintAsync();
+  const cjbConfig = await getCjbConfigAsync();
+  const cjbWebpackConfigs = cjbConfig.webpackConfigs;
+  const entryPoints = Object.keys(cjbWebpackConfigs);
+  let webpackConfigs = {};
+  for (let point of entryPoints) {
+    webpackConfigs[point] =
+      createSingleWebpackConfig(cjbWebpackConfigs[point], {
+        babel: path.join(cwd, 'node_modules',
+          thisProjectName, 'dist', 'babel-loader'),
+        json: path.join(cwd, 'node_modules',
+          thisProjectName, 'dist', 'json-loader')
+      });
+  }
 
-    const cjbConfig = await getCjbConfigAsync();
-    const cjbWebpackConfigs = cjbConfig.webpackConfigs;
-    const entryPoints = Object.keys(cjbWebpackConfigs);
-    let webpackConfigs = {};
-    for (let point of entryPoints) {
-      webpackConfigs[point] =
-        createSingleWebpackConfig(cjbWebpackConfigs[point], {
-          babel: path.join(cwd, 'node_modules',
-            thisProjectName, 'dist', 'babel-loader'),
-          json: path.join(cwd, 'node_modules',
-            thisProjectName, 'dist', 'json-loader')
-        });
+  if (process.argv[2] === 'wds') {
+    const entryPointName = process.argv[3];
+    if (entryPointName === undefined) {
+      throw new Error('The command `cjb wds` needs to specify an entry' +
+        ' point. For example: `cjb wds entry_point`.');
     }
 
-    if (process.argv[2] === 'wds') {
-      const entryPointName = process.argv[3];
-      if (entryPointName === undefined) {
-        throw new Error('The command `cjb wds` needs to specify an entry' +
-          ' point. For example: `cjb wds entry_point`.');
+    const config = webpackConfigs[entryPointName];
+
+    await runWebpackDevServerAsync(
+      config,
+      getTextToAddToTopOfTempEntryFile(config),
+      {
+        webpack: path.join(cwd, 'node_modules',
+          thisProjectName, 'dist', 'webpack'),
+        'webpack-dev-server': // eslint-disable-line object-shorthand
+                              // (why is this a violation?)
+          path.join(cwd, 'node_modules',
+            thisProjectName, 'dist', 'webpack-dev-server')
       }
-
-      const config = webpackConfigs[entryPointName];
-
-      await runWebpackDevServerAsync(
+    );
+  } else {
+    const entryPointNames = Object.keys(webpackConfigs);
+    for (let pointName of entryPointNames) {
+      const config = webpackConfigs[pointName];
+      await runWebpackAsync(
         config,
-        getTextToAddToTopOfTempEntryFile(config),
-        {
-          webpack: path.join(cwd, 'node_modules',
-            thisProjectName, 'dist', 'webpack'),
-          'webpack-dev-server': // eslint-disable-line object-shorthand
-                                // (why is this a violation?)
-            path.join(cwd, 'node_modules',
-              thisProjectName, 'dist', 'webpack-dev-server')
-        }
+        getTextToAddToTopOfTempEntryFile(config)
       );
-    } else {
-      const entryPointNames = Object.keys(webpackConfigs);
-      for (let pointName of entryPointNames) {
-        const config = webpackConfigs[pointName];
-        await runWebpackAsync(
-          config,
-          getTextToAddToTopOfTempEntryFile(config)
-        );
-      }
     }
-
-  } catch (err) {
-    utils.handleError(err);
   }
 }
 

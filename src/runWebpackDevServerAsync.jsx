@@ -52,74 +52,68 @@ async function runWebpackDevServerAsync(
   textToAddAtTopOfEntryFile,
   packagePaths
 ) {
-  try {
-
-    for (let moduleName of ['webpack', 'webpack-dev-server']) {
-      if (!packagePaths[moduleName]) {
-        throw new Error(`Path for module "${moduleName}" must be` +
-          ` specified by defining property \`${moduleName}\` in argument` +
-          ' `packagePaths`');
-      }
+  for (let moduleName of ['webpack', 'webpack-dev-server']) {
+    if (!packagePaths[moduleName]) {
+      throw new Error(`Path for module "${moduleName}" must be` +
+        ` specified by defining property \`${moduleName}\` in argument` +
+        ' `packagePaths`');
     }
-
-    if (!_.isString(webpackConfig.entry)) {
-      throw new Error('`webpackConfig.entry` must be a string');
-    }
-
-    const projectEnv = await getProjectEnvAsync();
-
-    const port = projectEnv.CJB_WDS_PORT;
-
-    if (!port) {
-      throw new Error('To use the webpack dev server, environment.js/jsx must' +
-        ' export property `CJB_WDS_PORT`');
-    }
-
-    if (!Number.isInteger(port)) {
-      throw new Error('Property `wdsPort` in projectEnv.js/jsx must be an' +
-        ' integer`');
-    }
-
-    let devServerWebpackConfig = Object.assign({}, webpackConfig);
-
-    const newEntryFilePath =
-      await generateModifiedEntryFileAsync(
-        devServerWebpackConfig,
-        textToAddAtTopOfEntryFile
-      );
-
-    const wdsClientPath =
-      path.join(packagePaths['webpack-dev-server'], 'client');
-    const webpackHotDevServerPath =
-      path.join(packagePaths.webpack, 'hot', 'dev-server');
-    devServerWebpackConfig.entry = [
-      `${wdsClientPath}?http://0.0.0.0:${port}`,
-      webpackHotDevServerPath,
-      newEntryFilePath
-    ];
-
-    if (!devServerWebpackConfig.output) {
-      devServerWebpackConfig.output = {};
-    }
-    devServerWebpackConfig.output.publicPath = '/dist';
-
-    const server = Bluebird.promisifyAll(new WebpackDevServer(
-      webpack(devServerWebpackConfig),
-      {
-        publicPath: devServerWebpackConfig.output.publicPath,
-        hot: true
-      }
-    ));
-
-    // Setting the host to "localhost" instead of "0.0.0.0" makes the server
-    // inaccessible from a guest OS on virtual machines.
-    await server.listenAsync(port, '0.0.0.0');
-
-    console.log(`Webpack dev server listening at 0.0.0.0:${port}`);
-
-  } catch (err) {
-    utils.handleError(err);
   }
+
+  if (!_.isString(webpackConfig.entry)) {
+    throw new Error('`webpackConfig.entry` must be a string');
+  }
+
+  const projectEnv = await getProjectEnvAsync();
+
+  const port = projectEnv.CJB_WDS_PORT;
+
+  if (!port) {
+    throw new Error('To use the webpack dev server, environment.js/jsx must' +
+      ' export property `CJB_WDS_PORT`');
+  }
+
+  if (!Number.isInteger(port)) {
+    throw new Error('Property `wdsPort` in projectEnv.js/jsx must be an' +
+      ' integer`');
+  }
+
+  let devServerWebpackConfig = Object.assign({}, webpackConfig);
+
+  const newEntryFilePath =
+    await generateModifiedEntryFileAsync(
+      devServerWebpackConfig,
+      textToAddAtTopOfEntryFile
+    );
+
+  const wdsClientPath =
+    path.join(packagePaths['webpack-dev-server'], 'client');
+  const webpackHotDevServerPath =
+    path.join(packagePaths.webpack, 'hot', 'dev-server');
+  devServerWebpackConfig.entry = [
+    `${wdsClientPath}?http://0.0.0.0:${port}`,
+    webpackHotDevServerPath,
+    newEntryFilePath
+  ];
+
+  if (!devServerWebpackConfig.output) {
+    devServerWebpackConfig.output = {};
+  }
+  devServerWebpackConfig.output.publicPath = '/dist';
+
+  const server = Bluebird.promisifyAll(new WebpackDevServer(
+    webpack(devServerWebpackConfig),
+    {
+      publicPath: devServerWebpackConfig.output.publicPath,
+      hot: true
+    }
+  ));
+
+  // Setting the host to "localhost" instead of "0.0.0.0" makes the server
+  // inaccessible from a guest OS on virtual machines.
+  await server.listenAsync(port, '0.0.0.0');
+
+  console.log(`Webpack dev server listening at 0.0.0.0:${port}`);
 }
 
 module.exports = runWebpackDevServerAsync;

@@ -189,15 +189,46 @@ the content of the specified entry file, adding the following stuff at the
 beginning of the temporary file, and running webpack from the temporary file.
 This file is automatically deleted when webpack is done running.
 
-- If `webpackConfig.output.libraryTarget` is defined, nothing significant will
-be added.
-- Assume `webpackConfig.output.libraryTarget` is undefined from here on.
-- If the entry point's `target` is `"web"`,
-`require('chcokr-js-build/dist/polyfill-web')` is added, which takes care of
-`require('babel/polyfill')`.
-- If the entry point's `target` is `"node"`,
-`require('chcokr-js-build/dist/polyfill-node')` is added, which takes care of
-`require('babel/polyfill')` and `require('source-map-support').install()`. 
+So what stuff gets added?
+
+### If `webpackConfig.output.libraryTarget` is defined, nothing is added
+
+Defining `output.libraryTarget` means that the output will be used as a library
+to be imported.
+In such a case, CJB should not mess with the global scope.
+
+### `source-map-support`
+
+In a `"node"` target **only**, `require('source-map-support').install()`
+happens.
+This is to ensure understandable error traces appear in a node environment.
+The `"browser"` target doesn't/shouldn't do this because `source-map-support`
+only works on the V8 engine.
+
+### Babel polyfill is automatically injected
+
+In both `"web"` and `"node"` targets, `require('babel/polyfill')` happens.
+The Babel polyfill ensures that the target environment has as much ES6
+compatibility as possible.
+
+### `Promise`s are overridden with `Bluebird`s
+
+[Bluebird](https://github.com/petkaantonov/bluebird) is a library that not only
+implements all of the Promise/A+ specification, but also adds a ton of advanced
+features to the Promise experience.
+
+In both `"web"` and `"node"` targets, an application built with CJB will in fact
+be using a `Bluebird` whenever it calls a `Promise`.
+This is achieved by the following line in the CJB polyfills.
+
+```JS
+global.Promise = require('bluebird');
+```
+
+This is done because Bluebird's handling of unhandled errors within `Promises`
+and `async` functions is superior to that of the default `Promise`.
+See [issue #21](https://github.com/chcokr/js-build/issues/21) for further
+explanation or discussion.
 
 ## List of `webpackConfigs` manipulations
 

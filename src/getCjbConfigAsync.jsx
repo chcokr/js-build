@@ -24,51 +24,45 @@ let cjbConfigCache = null;
  * @throws {Error} When Babel cannot compile the contents of `cjbConfig.js/jsx`.
  */
 async function readCjbConfigAsync() {
+  const cjbConfigJsExists =
+    await utils.pathExistsAsync(path.resolve(cwd, 'cjbConfig.js'));
+  const cjbConfigPath = path.join(
+    cwd,
+    'cjbConfig.' + (cjbConfigJsExists ? 'js' : 'jsx')
+  );
+
+  // cjbConfig.js/jsx may be written in non-node-compatible JS.
+  // So we transpile the file,
+  // write the result of the transpilation in a temporary file,
+  // extract the `module.exports` object using node's native
+  // `require` function (which is accessible by `require('module')._load`),
+  // and then remove the temporary file.
+
+  const babelOptions = require('./.babelrc');
+
+  let transpiledCjbConfigContent;
   try {
-
-    const cjbConfigJsExists =
-      await utils.pathExistsAsync(path.resolve(cwd, 'cjbConfig.js'));
-    const cjbConfigPath = path.join(
-      cwd,
-      'cjbConfig.' + (cjbConfigJsExists ? 'js' : 'jsx')
-    );
-
-    // cjbConfig.js/jsx may be written in non-node-compatible JS.
-    // So we transpile the file,
-    // write the result of the transpilation in a temporary file,
-    // extract the `module.exports` object using node's native
-    // `require` function (which is accessible by `require('module')._load`),
-    // and then remove the temporary file.
-
-    const babelOptions = require('./.babelrc');
-
-    let transpiledCjbConfigContent;
-    try {
-      transpiledCjbConfigContent =
-        (await babel.transformFileAsync(cjbConfigPath, babelOptions)).code;
-    } catch (err) {
-      console.error(`Babel: in file ${cjbConfigPath}`);
-      throw err;
-    }
-
-    const transpiledCjbConfigFileName = 'cjbConfig.transpiled.js';
-
-    await fs.writeFileAsync(
-      transpiledCjbConfigFileName,
-      transpiledCjbConfigContent
-    );
-
-    const transpiledCjbConfigPath = path.join(cwd, transpiledCjbConfigFileName);
-
-    const cjbConfig = nodeRequire(transpiledCjbConfigPath);
-
-    await fs.unlinkAsync(transpiledCjbConfigPath);
-
-    return cjbConfig;
-
+    transpiledCjbConfigContent =
+      (await babel.transformFileAsync(cjbConfigPath, babelOptions)).code;
   } catch (err) {
-    utils.handleError(err);
+    console.error(`Babel: in file ${cjbConfigPath}`);
+    throw err;
   }
+
+  const transpiledCjbConfigFileName = 'cjbConfig.transpiled.js';
+
+  await fs.writeFileAsync(
+    transpiledCjbConfigFileName,
+    transpiledCjbConfigContent
+  );
+
+  const transpiledCjbConfigPath = path.join(cwd, transpiledCjbConfigFileName);
+
+  const cjbConfig = nodeRequire(transpiledCjbConfigPath);
+
+  await fs.unlinkAsync(transpiledCjbConfigPath);
+
+  return cjbConfig;
 }
 
 /**
